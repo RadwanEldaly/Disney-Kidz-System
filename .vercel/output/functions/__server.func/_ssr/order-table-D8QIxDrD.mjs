@@ -1,0 +1,162 @@
+import { b as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
+import { t as displayPhone } from "./phone-J9aUwa-X.mjs";
+import { t as cn } from "./utils-C_uf36nf.mjs";
+import { t as EmptyState } from "./empty-state-B2MsN4po.mjs";
+import { t as MoneyText } from "./money-text-CN1XVQ4V.mjs";
+import { n as PaymentBadge, r as ShippingBadge, t as ConfirmationBadge } from "./status-badge-Mt5zUAtt.mjs";
+import { t as format } from "../_libs/date-fns.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/order-table-D8QIxDrD.js
+var import_jsx_runtime = require_jsx_runtime();
+function OrderTable({ orders, emptyTitle = "No orders found", emptyDescription }) {
+	if (orders.length === 0) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EmptyState, {
+		title: emptyTitle,
+		description: emptyDescription
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "hidden overflow-x-auto md:block",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+			className: "w-full text-left text-sm",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+				className: "border-b border-border text-xs text-muted",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Order"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Customer"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Phone"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Products"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium text-right",
+						children: "Total"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium text-right",
+						children: "Paid"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium text-right",
+						children: "Remaining"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Confirmation"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Shipping"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+						className: "px-3 py-2 font-medium",
+						children: "Date"
+					})
+				] })
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: orders.map((o) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+				className: "border-b border-border last:border-0 hover:bg-surface-2/60",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+						className: "px-3 py-3",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							to: "/orders/$orderId",
+							params: { orderId: o.id },
+							className: "font-medium hover:underline",
+							children: o.orderNumber
+						}), o.isSample ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "ml-2 text-xs text-muted",
+							children: "Sample"
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3",
+						children: o.customerName
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3 tabular",
+						children: displayPhone(o.customerPhone)
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "max-w-48 truncate px-3 py-3 text-muted",
+						children: o.itemsSummary
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3 text-right",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MoneyText, { value: o.totalAmount })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3 text-right",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MoneyText, { value: o.paidAmount })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3 text-right font-medium",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MoneyText, { value: o.remaining })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConfirmationBadge, { status: o.confirmationStatus })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShippingBadge, { status: o.shippingStatus })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+						className: "px-3 py-3 text-muted",
+						children: format(new Date(o.orderDate), "d MMM yyyy")
+					})
+				]
+			}, o.id)) })]
+		})
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "flex flex-col gap-3 md:hidden",
+		children: orders.map((o) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+			to: "/orders/$orderId",
+			params: { orderId: o.id },
+			className: cn("rounded-xl border border-border bg-surface p-4 shadow-soft"),
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-start justify-between gap-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "font-medium",
+							children: o.orderNumber
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm",
+							children: o.customerName
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-xs text-muted tabular",
+							children: displayPhone(o.customerPhone)
+						})
+					] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MoneyText, {
+						value: o.remaining,
+						className: "font-medium"
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-2 truncate text-xs text-muted",
+					children: o.itemsSummary
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-3 flex flex-wrap gap-1.5",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConfirmationBadge, { status: o.confirmationStatus }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShippingBadge, { status: o.shippingStatus }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PaymentBadge, { status: o.paymentStatus })
+					]
+				})
+			]
+		}, o.id))
+	})] });
+}
+//#endregion
+export { OrderTable as t };

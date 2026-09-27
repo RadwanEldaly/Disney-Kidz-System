@@ -1,0 +1,43 @@
+import { A as boolean, D as _enum, F as object, R as string } from "../_libs/@better-auth/core+[...].mjs";
+import { a as getServerFnById, i as TSS_SERVER_FUNCTION, r as createServerFn } from "./ssr.mjs";
+import { l as getSql, t as authMiddleware } from "./helpers-DMjkvUH-.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/settings-DgwDKBMQ.js
+var createSsrRpc = (functionId) => {
+	const url = "/_serverFn/" + functionId;
+	const serverFnMeta = { id: functionId };
+	const fn = async (...args) => {
+		return (await getServerFnById(functionId, { origin: "server" }))(...args);
+	};
+	return Object.assign(fn, {
+		url,
+		serverFnMeta,
+		[TSS_SERVER_FUNCTION]: true
+	});
+};
+async function loadSettingsRow() {
+	return (await (await getSql()).query(`select * from store_settings where id = 1`))[0];
+}
+/**
+* Public settings for the Admin UI.
+*
+* Operational credentials are stored in store_settings and managed from Settings.
+* Environment variables are only a deploy/bootstrap fallback — never required for
+* day-to-day admin changes. Secrets are always masked; full values never leave the server.
+*/
+var getSettings = createServerFn({ method: "GET" }).middleware([authMiddleware]).handler(createSsrRpc("9b36a4c1185958551fcc8de1b888777de8a08ebe75806d2780396ecc0b4eafe7"));
+var saveSettings = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator(object({
+	storeName: string().min(1).optional(),
+	defaultShippingCompany: string().optional(),
+	shopifyStoreDomain: string().optional(),
+	shopifyAccessToken: string().optional(),
+	shopifyWebhookSecret: string().optional(),
+	bostaApiKey: string().optional(),
+	bostaEnvironment: _enum(["production", "staging"]).optional(),
+	whatsappTemplate: string().optional(),
+	clearShopifyToken: boolean().optional(),
+	clearBostaKey: boolean().optional()
+})).handler(createSsrRpc("6deea7053de8c1f0ddc06e0c96c4ee055196bb8ff375550592d9c25fc37c7906"));
+var loadSampleData = createServerFn({ method: "POST" }).middleware([authMiddleware]).handler(createSsrRpc("dff88ace8cbf837fc5a087e6c0ca800995e98fd56a5e7e5f69f7d7ec03978e61"));
+var clearSampleData = createServerFn({ method: "POST" }).middleware([authMiddleware]).handler(createSsrRpc("1b3bba0b4aea6ff05d27100dafd39ed868c8eb3e1d38f382bbe961ff61ddd4d7"));
+//#endregion
+export { loadSettingsRow as a, loadSampleData as i, createSsrRpc as n, saveSettings as o, getSettings as r, clearSampleData as t };

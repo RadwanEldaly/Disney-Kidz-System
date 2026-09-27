@@ -1,0 +1,82 @@
+//#region node_modules/.nitro/vite/services/ssr/assets/constants-CiwKeKec.js
+var APP_NAME = "Disney Kidz Sales";
+var CONFIRMATION_STATUSES = [
+	"new",
+	"contact_customer",
+	"waiting_confirmation",
+	"confirmed",
+	"cancelled"
+];
+var CONFIRMATION_LABELS = {
+	new: "New",
+	contact_customer: "Contact Customer",
+	waiting_confirmation: "Waiting Confirmation",
+	confirmed: "Confirmed",
+	cancelled: "Cancelled"
+};
+var SHIPPING_STATUSES = [
+	"not_registered",
+	"registered",
+	"shipped",
+	"out_for_delivery",
+	"delivered",
+	"returned"
+];
+var SHIPPING_LABELS = {
+	not_registered: "Not Registered",
+	registered: "Registered with Bosta",
+	shipped: "Shipped",
+	out_for_delivery: "Out for Delivery",
+	delivered: "Delivered",
+	returned: "Returned"
+};
+var PAYMENT_STATUS_LABELS = {
+	unpaid: "Unpaid",
+	partial: "Partially Paid",
+	paid: "Fully Paid"
+};
+var PAYMENT_METHODS = [
+	"cash",
+	"instapay",
+	"vodafone_cash",
+	"bank",
+	"other"
+];
+var PAYMENT_METHOD_LABELS = {
+	cash: "Cash",
+	instapay: "InstaPay",
+	vodafone_cash: "Vodafone Cash",
+	bank: "Bank Transfer",
+	other: "Other"
+};
+var GOVERNORATES = [
+	"Cairo",
+	"Giza",
+	"Alexandria",
+	"Qalyubia",
+	"Sharqia",
+	"Dakahlia",
+	"Beheira",
+	"Kafr El Sheikh",
+	"Gharbia",
+	"Monufia",
+	"Damietta",
+	"Port Said",
+	"Ismailia",
+	"Suez",
+	"North Sinai",
+	"South Sinai",
+	"Fayoum",
+	"Beni Suef",
+	"Minya",
+	"Assiut",
+	"Sohag",
+	"Qena",
+	"Luxor",
+	"Aswan",
+	"Red Sea",
+	"New Valley",
+	"Matrouh"
+];
+//#endregion
+export { PAYMENT_METHODS as a, SHIPPING_LABELS as c, GOVERNORATES as i, SHIPPING_STATUSES as l, CONFIRMATION_LABELS as n, PAYMENT_METHOD_LABELS as o, CONFIRMATION_STATUSES as r, PAYMENT_STATUS_LABELS as s, APP_NAME as t };

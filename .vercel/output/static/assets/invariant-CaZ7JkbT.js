@@ -1,0 +1,1 @@
+function e(e){return e?.isNotFound===!0}function t(){throw Error(`Invariant failed`)}export{e as n,t};

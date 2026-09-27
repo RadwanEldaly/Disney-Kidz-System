@@ -1,0 +1,1 @@
+import{O as e}from"./preload-helper-Dqg9iK_X.js";import{n as t,t as n}from"./middleware-C0BLPi7U.js";var r=t({method:`GET`}).middleware([n]).handler(e(`f77ecbd962621f24ca6b18b109613b9bc6bc68cd4fd61a81d59ee40c85f43786`));export{r as t};

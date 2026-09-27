@@ -1,0 +1,109 @@
+import { D as _enum, F as object, R as string } from "../_libs/@better-auth/core+[...].mjs";
+import { r as createServerFn } from "./ssr.mjs";
+import { l as getSql, t as authMiddleware, v as moneyString } from "./helpers-DMjkvUH-.mjs";
+import { l as SHIPPING_STATUSES, r as CONFIRMATION_STATUSES } from "./constants-CiwKeKec.mjs";
+import { t as createServerRpc } from "./createServerRpc-CcvdN_gc.mjs";
+import { t as ensurePreviewSample } from "./sample-BZ-CvuV9.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/reports-iWYGk8Xg.js
+function rangeFromPreset(preset, from, to) {
+	const now = /* @__PURE__ */ new Date();
+	const startOfDay = (d) => {
+		const x = new Date(d);
+		x.setHours(0, 0, 0, 0);
+		return x;
+	};
+	if (preset === "custom" && from && to) return {
+		from: new Date(from).toISOString(),
+		to: new Date(to).toISOString()
+	};
+	if (preset === "today") return {
+		from: startOfDay(now).toISOString(),
+		to: now.toISOString()
+	};
+	if (preset === "week") {
+		const d = startOfDay(now);
+		d.setDate(d.getDate() - d.getDay());
+		return {
+			from: d.toISOString(),
+			to: now.toISOString()
+		};
+	}
+	const d = startOfDay(now);
+	d.setDate(1);
+	return {
+		from: d.toISOString(),
+		to: now.toISOString()
+	};
+}
+var getReports_createServerFn_handler = createServerRpc({
+	id: "f16acff55074e53fc02c98a9026937f24c61b8c322ff849fd2e7e2bf480bf755",
+	name: "getReports",
+	filename: "src/lib/server/reports.ts"
+}, (opts) => getReports.__executeServer(opts));
+var getReports = createServerFn({ method: "GET" }).middleware([authMiddleware]).validator(object({
+	preset: _enum([
+		"today",
+		"week",
+		"month",
+		"custom"
+	]).optional(),
+	from: string().optional(),
+	to: string().optional()
+})).handler(getReports_createServerFn_handler, async ({ data, context }) => {
+	const sql = await getSql();
+	await ensurePreviewSample(sql, context.userId);
+	const range = rangeFromPreset(data.preset ?? "month", data.from, data.to);
+	const s = (await sql.query(`select
+         count(*)::int as orders_count,
+         coalesce(sum(total_amount) filter (where confirmation_status <> 'cancelled'), 0) as total_sales,
+         coalesce(sum(total_amount - paid_amount) filter (where confirmation_status <> 'cancelled'), 0) as outstanding,
+         count(*) filter (where shipping_status = 'delivered')::int as delivered,
+         count(*) filter (where confirmation_status = 'cancelled')::int as cancelled,
+         count(*) filter (where shipping_status = 'returned')::int as returned
+       from orders
+       where order_date >= $1::timestamptz and order_date <= $2::timestamptz`, [range.from, range.to]))[0];
+	const byConf = await sql.query(`select confirmation_status as status, count(*)::int as count
+       from orders
+       where order_date >= $1::timestamptz and order_date <= $2::timestamptz
+       group by confirmation_status`, [range.from, range.to]);
+	const byShip = await sql.query(`select shipping_status as status, count(*)::int as count
+       from orders
+       where order_date >= $1::timestamptz and order_date <= $2::timestamptz
+       group by shipping_status`, [range.from, range.to]);
+	const top = await sql.query(`select c.id, c.name, count(o.id)::int as order_count,
+              coalesce(sum(o.total_amount) filter (where o.confirmation_status <> 'cancelled'), 0) as total_spent
+       from customers c
+       join orders o on o.customer_id = c.id
+       where o.order_date >= $1::timestamptz and o.order_date <= $2::timestamptz
+       group by c.id
+       order by sum(o.total_amount) filter (where o.confirmation_status <> 'cancelled') desc nulls last
+       limit 8`, [range.from, range.to]);
+	const confMap = new Map(byConf.map((r) => [r.status, r.count]));
+	const shipMap = new Map(byShip.map((r) => [r.status, r.count]));
+	return {
+		from: range.from,
+		to: range.to,
+		ordersCount: s?.orders_count ?? 0,
+		totalSales: moneyString(s?.total_sales),
+		outstanding: moneyString(s?.outstanding),
+		delivered: s?.delivered ?? 0,
+		cancelled: s?.cancelled ?? 0,
+		returned: s?.returned ?? 0,
+		byConfirmation: CONFIRMATION_STATUSES.map((status) => ({
+			status,
+			count: confMap.get(status) ?? 0
+		})),
+		byShipping: SHIPPING_STATUSES.map((status) => ({
+			status,
+			count: shipMap.get(status) ?? 0
+		})),
+		topCustomers: top.map((c) => ({
+			id: c.id,
+			name: c.name,
+			orderCount: c.order_count,
+			totalSpent: moneyString(c.total_spent)
+		}))
+	};
+});
+//#endregion
+export { getReports_createServerFn_handler };

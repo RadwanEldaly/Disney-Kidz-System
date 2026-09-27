@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-BtH0gOTJ.js";import{t}from"./utils-DOQQTBMN.js";import{t as n}from"./money-BEZT1RkZ.js";var r=e();function i({value:e,className:i,emphasize:a}){return(0,r.jsx)(`span`,{className:t(`tabular`,a&&`text-lg font-medium tracking-tight`,i),children:n(e)})}export{i as t};
