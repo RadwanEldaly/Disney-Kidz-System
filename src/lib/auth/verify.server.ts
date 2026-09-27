@@ -18,13 +18,8 @@ const databaseConfigured = Boolean(process.env.DATABASE_URL?.trim());
 /** Re-export so callers can branch on it without importing `server.ts`. */
 export { authConfigured };
 
-if (databaseConfigured && !authConfigured) {
-  console.error(
-    "[auth] DATABASE_URL is set but auth is disabled (VITE_AUTH_ENABLED=false) " +
-      "— requireUserId() will reject every request (fail closed) rather than " +
-      "share one dev user on a real database.",
-  );
-}
+// When auth is off, requireUserId() returns the shared staff user even if
+// DATABASE_URL is set (internal single-tenant dashboard). Do not log as error.
 
 /** Dev fallback user id, used only when auth is disabled (VITE_AUTH_ENABLED=false). */
 export const DEV_USER_ID = "dev-user";
@@ -73,22 +68,15 @@ export async function getSessionUser(
 /**
  * Resolve the current user id for a server function, or throw when unauthorized.
  * Prefer `authMiddleware` (`./middleware`), which calls this for you.
- * - Auth enabled -> the verified session user id; throws
- *   `UnauthorizedError` when signed out. Works in the sandbox preview too (real
- *   sign-in via the baked preview client).
- * - Auth disabled (`VITE_AUTH_ENABLED=false`) + `DATABASE_URL` set -> throw (fail
- *   closed): one shared dev user on a real database would let every visitor
- *   read/write everyone's rows.
- * - Auth disabled + no database -> the shared dev user id.
+ *
+ * - Auth enabled -> verified session user id; throws UnauthorizedError when signed out.
+ * - Auth disabled (`VITE_AUTH_ENABLED=false`) -> shared staff user `dev-user`.
+ *   This app is a private internal ops dashboard (single-tenant team data).
+ *   When login is intentionally off, server functions run as staff so Production
+ *   (with DATABASE_URL) works the same as local. Keep the deploy URL private.
  */
 export async function requireUserId(bearerToken?: string): Promise<string> {
   if (!authConfigured && !gateIdentityEnabled()) {
-    if (databaseConfigured) {
-      throw new Error(
-        "Auth is disabled (VITE_AUTH_ENABLED=false) but DATABASE_URL is set — " +
-          "refusing to fall back to the shared dev user against a real database.",
-      );
-    }
     return DEV_USER_ID;
   }
   const user = await getSessionUser(bearerToken);
