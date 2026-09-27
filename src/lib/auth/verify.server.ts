@@ -2,18 +2,10 @@ import { getRequest } from "@tanstack/react-start/server";
 import { gateIdentityEnabled } from "./gate-identity.server";
 import { auth, authConfigured } from "./server";
 
-/** True when a real database is configured server-side. */
-const databaseConfigured = Boolean(process.env.DATABASE_URL?.trim());
-
-/** Re-export so callers can branch on it without importing `server.ts`. */
 export { authConfigured };
 
-/** Dev fallback user id, used only when auth is disabled (VITE_AUTH_ENABLED=false). */
 export const DEV_USER_ID = "dev-user";
 
-/**
- * Thrown by `requireUserId` when the caller has no valid session.
- */
 export class UnauthorizedError extends Error {
   readonly status = 401;
   constructor() {
@@ -24,10 +16,17 @@ export class UnauthorizedError extends Error {
 
 export type VerifiedUser = { id: string; email: string | null };
 
+function authIsOff(): boolean {
+  // Direct env check — most reliable on Vercel runtime
+  if (process.env.VITE_AUTH_ENABLED === "false") return true;
+  if (!authConfigured && !gateIdentityEnabled()) return true;
+  return false;
+}
+
 export async function getSessionUser(
   bearerToken?: string,
 ): Promise<VerifiedUser | null> {
-  if (!authConfigured && !gateIdentityEnabled()) return null;
+  if (authIsOff()) return null;
   const request = getRequest();
   if (!request) return null;
   let headers = request.headers;
@@ -40,12 +39,9 @@ export async function getSessionUser(
   return { id: session.user.id, email: session.user.email ?? null };
 }
 
-/**
- * Auth disabled → staff user (dev-user), even when DATABASE_URL is set.
- * Internal single-tenant dashboard — keep the URL private.
- */
+/** Auth off → always staff user. Keep deploy URL private. */
 export async function requireUserId(bearerToken?: string): Promise<string> {
-  if (!authConfigured && !gateIdentityEnabled()) {
+  if (authIsOff()) {
     return DEV_USER_ID;
   }
   const user = await getSessionUser(bearerToken);
