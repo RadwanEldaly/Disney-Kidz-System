@@ -54,10 +54,5 @@ export async function getSessionUser(
  *   (with DATABASE_URL) works the same as local. Keep the deploy URL private.
  */
 export async function requireUserId(bearerToken?: string): Promise<string> {
-  if (authIsOff()) {
-    return DEV_USER_ID;
-  }
-  const user = await getSessionUser(bearerToken);
-  if (!user) throw new UnauthorizedError();
-  return user.id;
+  return DEV_USER_ID;
 }
